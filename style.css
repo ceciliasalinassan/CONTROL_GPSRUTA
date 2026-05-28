@@ -1551,3 +1551,237 @@ main:before{
     flex-direction:column;
   }
 }
+
+
+/* COBROS / RECORDATORIOS COMPACTO */
+.compactReminders{
+  align-self:start;
+}
+
+.reminderTools{
+  display:grid;
+  grid-template-columns:1fr 150px 90px;
+  gap:8px;
+  align-items:center;
+  margin-bottom:10px;
+}
+
+.reminderTools .search.inner{
+  margin:0!important;
+}
+
+.reminderCount{
+  min-height:42px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:5px;
+  border:1px solid rgba(0,255,210,.25);
+  border-radius:13px;
+  background:rgba(0,255,210,.06);
+}
+
+.reminderCount b{
+  color:#00ffd2;
+  font-size:20px;
+}
+
+.reminderCount span{
+  color:#dff;
+  font-size:11px;
+  text-transform:uppercase;
+}
+
+.compactList{
+  max-height:calc(100vh - 295px);
+  overflow:auto;
+  padding-right:5px;
+}
+
+.compactReminder{
+  display:grid!important;
+  grid-template-columns:24px minmax(0,1fr) auto auto;
+  align-items:center;
+  gap:8px!important;
+  padding:8px 10px!important;
+  min-height:50px;
+}
+
+.compactReminder div{
+  min-width:0;
+}
+
+.compactReminder b{
+  display:block;
+  font-size:13px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.compactReminder p{
+  font-size:11px;
+  margin:2px 0 0!important;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  color:#b7c7d6!important;
+}
+
+.compactReminder strong{
+  color:#FFD43B;
+  font-size:12px;
+  white-space:nowrap;
+}
+
+.compactReminder small{
+  color:#dff;
+  font-size:11px;
+  white-space:nowrap;
+}
+
+.stickyCobroAction{
+  position:sticky;
+  top:14px;
+  align-self:start;
+  z-index:5;
+}
+
+@media(max-width:900px){
+  .reminderTools{
+    grid-template-columns:1fr;
+  }
+  .compactList{
+    max-height:420px;
+  }
+  .stickyCobroAction{
+    position:relative;
+    top:auto;
+  }
+  .compactReminder{
+    grid-template-columns:24px 1fr;
+  }
+  .compactReminder strong,
+  .compactReminder small{
+    grid-column:2;
+  }
+}
+
+
+/* HISTORIALES COMPACTOS CON SCROLL + FILTROS */
+.historyFormSticky{
+  position:sticky;
+  top:14px;
+  z-index:6;
+  align-self:start;
+  border-color:rgba(255,212,59,.36)!important;
+}
+
+.compactHistoryCard{
+  align-self:start;
+}
+
+.historyFilters{
+  display:grid;
+  grid-template-columns:1fr 170px 140px auto;
+  gap:8px;
+  align-items:center;
+  margin:10px 0 12px;
+  padding:10px;
+  border:1px solid rgba(0,255,210,.22);
+  border-radius:15px;
+  background:rgba(0,255,210,.055);
+}
+
+.historyFilters input,
+.historyFilters select{
+  height:38px!important;
+  font-size:12px!important;
+}
+
+.historyFilters button{
+  height:38px;
+  border:1px solid rgba(255,212,59,.35);
+  border-radius:11px;
+  background:rgba(255,212,59,.10);
+  color:#FFD43B;
+  font-weight:900;
+  cursor:pointer;
+  padding:0 12px;
+}
+
+.historyMiniStats{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:8px;
+  padding:8px 2px 10px;
+}
+
+.historyMiniStats b{
+  color:#00ffd2;
+  font-size:22px;
+  text-shadow:0 0 12px rgba(0,255,210,.45);
+}
+
+.historyMiniStats span{
+  color:#dff;
+  font-size:12px;
+  text-transform:uppercase;
+}
+
+.historyMiniStats strong{
+  color:#FFD43B;
+  font-size:14px;
+  margin-left:8px;
+}
+
+.historyScroll{
+  max-height:calc(100vh - 330px);
+  overflow:auto;
+}
+
+.historyScroll thead th{
+  position:sticky;
+  top:0;
+  z-index:3;
+  backdrop-filter:blur(12px);
+}
+
+.compactHistoryCard table{
+  font-size:12px!important;
+}
+
+.compactHistoryCard th{
+  padding:9px 10px!important;
+  font-size:11px!important;
+}
+
+.compactHistoryCard td{
+  padding:8px 10px!important;
+  vertical-align:middle;
+}
+
+.compactHistoryCard .icon{
+  width:28px!important;
+  height:28px!important;
+  border-radius:8px!important;
+  font-size:9px!important;
+}
+
+@media(max-width:900px){
+  .historyFormSticky{
+    position:relative;
+    top:auto;
+  }
+  .historyFilters{
+    grid-template-columns:1fr;
+  }
+  .historyScroll{
+    max-height:420px;
+  }
+  .historyMiniStats{
+    justify-content:flex-start;
+    flex-wrap:wrap;
+  }
+}

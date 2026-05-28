@@ -74,3 +74,7 @@ Se agregó Centro de Control IA: radar financiero, centro de alertas y actividad
 Facturas compactas con formulario sticky. IA agrega clientes con 2, 3 y 4+ facturas pendientes.
 
 Facturas profesionales: carpetas por mes/año, filtros por estado y paginación de 50 registros.
+
+Cobros/Recordatorios compactado con filtros, contador, listado con scroll y panel de acción fijo.
+
+Historiales compactos: deudas, ingresos y egresos con filtros rápidos, scroll y panel de acción fijo.
