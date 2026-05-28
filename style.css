@@ -1785,3 +1785,75 @@ main:before{
     flex-wrap:wrap;
   }
 }
+
+
+/* === ESTABILIZACIÓN PROFESIONAL GPSRUTA === */
+.fatalError{
+  min-height:100vh;
+  display:grid;
+  place-items:center;
+  background:
+    radial-gradient(circle at 30% 20%,rgba(0,255,210,.18),transparent 28%),
+    linear-gradient(135deg,#020202,#050b0d);
+  color:#fff;
+  padding:24px;
+}
+.fatalError>div{
+  max-width:520px;
+  border:1px solid rgba(0,255,210,.35);
+  border-radius:24px;
+  background:rgba(0,0,0,.72);
+  padding:28px;
+  box-shadow:0 0 44px rgba(0,255,210,.16);
+  text-align:center;
+}
+.fatalError h1{
+  color:#7CFC00;
+  margin:0 0 8px;
+}
+.fatalError h2{
+  color:#FFD43B;
+}
+.fatalError p{
+  color:#dff;
+  line-height:1.45;
+}
+.fatalError button{
+  border:0;
+  border-radius:14px;
+  padding:12px 18px;
+  background:linear-gradient(135deg,#00ffd2,#7CFC00);
+  color:#001;
+  font-weight:900;
+  cursor:pointer;
+}
+
+/* Mejor rendimiento visual sin perder estilo */
+*{
+  scrollbar-width:thin;
+}
+.tableWrap,
+.historyScroll,
+.compactList,
+.cards,
+.aiChatMessages,
+.liveFeed{
+  will-change:scroll-position;
+}
+.card,
+.holoCard,
+.kpi,
+.summaryGrid div{
+  backface-visibility:hidden;
+}
+
+/* Botones y tablas más consistentes */
+button:disabled{
+  opacity:.45!important;
+  cursor:not-allowed!important;
+}
+input:focus,
+select:focus{
+  outline:2px solid rgba(0,255,210,.35)!important;
+  outline-offset:1px;
+}

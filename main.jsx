@@ -1,5 +1,5 @@
 
-import React,{useEffect,useMemo,useState}from"react";
+import React,{Component,useEffect,useMemo,useState}from"react";
 import{createRoot}from"react-dom/client";
 import{AlertTriangle,Bell,CalendarDays,CheckCircle,Clock,CreditCard,Edit,Eye,FileText,Lock,LogOut,Mail,Paperclip,Plus,Search,ShieldCheck,Trash2,TrendingDown,TrendingUp,UploadCloud,User,Users,Wallet,Save,Building2,MessageCircle,Bot,Sparkles,Download,Upload,HardDrive}from"lucide-react";
 import{ComposedChart,Bar,Line,XAxis,YAxis,Tooltip,ResponsiveContainer,CartesianGrid,PieChart,Pie,Cell,Legend,RadarChart,PolarGrid,PolarAngleAxis,PolarRadiusAxis,Radar}from"recharts";
@@ -58,6 +58,33 @@ function Login({onLogin}){const[p,setP]=useState(""),[e,setE]=useState("");retur
 function K({t,v,s,icon:Icon,tone="green"}){return <div className="card kpi"><div className={`kpiIcon ${tone}`}><Icon size={32}/></div><div><small>{t}</small><h3>{v}</h3><p>{s}</p></div></div>}
 function Fields({obj,set,fields}){return <div className="formGrid">{fields.map(f=><input key={f} value={obj[f]||""} onChange={e=>set({...obj,[f]:e.target.value})} placeholder={f.toUpperCase()} type={["fecha","emision","vencimiento"].includes(f)?"date":f==="monto"?"number":"text"}/>)}</div>}
 function InvTable({items,client,edit,del,data={},attachFile=()=>{},canSendInvoice=()=>true}){return <div className="tableWrap"><table><thead><tr><th>Factura</th><th>Cliente</th><th>Vence</th><th>Mes/Año</th><th>Monto</th><th>Estado</th><th>Acciones</th></tr></thead><tbody>{items.map(i=>{let c=client(i.clienteId),s=ist(i),Icon=s.I;return <tr key={i.id}><td><b>{i.factura}</b></td><td>{c?.nombre}</td><td>{i.vencimiento}</td><td>{ml(mk(i.vencimiento))}</td><td>{money(i.monto)}</td><td><span className={`status ${s.c}`}><Icon size={14}/>{s.l}</span></td><td><div className="actions"><label className="icon attachMini" title="Adjuntar factura"><Paperclip size={17}/><input type="file" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.xls,.xlsx" onChange={e=>attachFile(i.id,e.target.files?.[0])}/></label><a className="icon whatsapp" title="Recordatorio WhatsApp" href={waReminder(i,c)} target="_blank"><W/></a><a className="icon mail" title="Recordatorio correo manual" href={emailReminder(i,c)}><Mail size={17}/></a><button className="icon autoMailIcon" title="Recordatorio automático Outlook" onClick={()=>sendAutoReminder(i,c)}>AUTO</button><button className={`icon autoInvoiceIcon ${!data.attachments?.[i.id]?"disabled":""}`} title="Enviar factura automática Outlook" onClick={()=>sendAutoInvoice(i,c)}>PDF</button><a className={`icon invoiceSend ${!data.attachments?.[i.id]?"disabled":""}`} title="Enviar factura WhatsApp" href={data.attachments?.[i.id]?waInvoice(i,c):"#"} onClick={e=>{if(!canSendInvoice(i.id))e.preventDefault()}} target="_blank">FAC</a><button className="icon edit" onClick={()=>edit(i)}><Edit size={17}/></button><button className="icon trash" onClick={()=>del(i.id)}><Trash2 size={17}/></button>{data.attachments?.[i.id]&&<span className="attachedOk">Adjunta</span>}</div></td></tr>})}</tbody></table></div>}
+
+class ErrorBoundary extends Component{
+  constructor(props){
+    super(props);
+    this.state={hasError:false,error:null};
+  }
+  static getDerivedStateFromError(error){
+    return {hasError:true,error};
+  }
+  componentDidCatch(error,info){
+    console.error("GPSRUTA Error:",error,info);
+  }
+  render(){
+    if(this.state.hasError){
+      return <div className="fatalError">
+        <div>
+          <h1>GPSRUTA</h1>
+          <h2>Se detectó un error visual del sistema</h2>
+          <p>La información guardada no se ha perdido. Recarga la página o importa tu último respaldo.</p>
+          <button onClick={()=>location.reload()}>Recargar sistema</button>
+        </div>
+      </div>;
+    }
+    return this.props.children;
+  }
+}
+
 function App(){const[logged,setLogged]=useState(()=>sessionStorage.getItem(SESSION)==="1"),[data,setData]=useState(load),[tab,setTab]=useState("dashboard"),[clock,setClock]=useState(new Date()),[search,setSearch]=useState(""),[historyQuickFilter,setHistoryQuickFilter]=useState(""),[historyMonthFilter,setHistoryMonthFilter]=useState("Todos"),[historyStatusFilter,setHistoryStatusFilter]=useState("Todos"),[alertSearch,setAlertSearch]=useState(""),[reminderStatusFilter,setReminderStatusFilter]=useState("Todas"),[saved,setSaved]=useState("Sin cambios"),[selectedInvoiceId,setSelectedInvoiceId]=useState(null),[selectedMonth,setSelectedMonth]=useState(mk(today())),[invoiceFolderMonth,setInvoiceFolderMonth]=useState(mk(today())),[invoiceStatusFilter,setInvoiceStatusFilter]=useState("Todas"),[invoicePage,setInvoicePage]=useState(1),[chatOpen,setChatOpen]=useState(true),[chatInput,setChatInput]=useState(""),[emailSending,setEmailSending]=useState(false),[chatMessages,setChatMessages]=useState([{role:"ia",text:"Hola, soy la IA de Cobranza GPSRUTA. Pregúntame: ¿quién debe más?, ¿facturas vencidas?, ¿clientes premium?, ¿resumen del mes?, ¿ingresos?, ¿egresos?"}]);
 const[clientForm,setClientForm]=useState({nombre:"",rut:"",giro:"",telefono:"569",email:"",direccion:"",contacto:""}),[invoiceForm,setInvoiceForm]=useState({clienteId:"",factura:"",emision:today(),vencimiento:today(),monto:"",estado:"Pendiente",detalle:""}),[incomeForm,setIncomeForm]=useState({fecha:today(),categoria:"Pago de factura",descripcion:"",monto:"",facturaId:""}),[expenseForm,setExpenseForm]=useState({fecha:today(),categoria:"Pago instalador",descripcion:"",monto:"",debtId:"",numeroFacturaPago:""}),[debtForm,setDebtForm]=useState({fecha:today(),proveedor:"",emailProveedor:"",categoria:"Compra de equipos",descripcion:"",monto:"",vencimiento:today(),estado:"Pendiente"}),[editingClient,setEditingClient]=useState(null),[editingInvoice,setEditingInvoice]=useState(null);
 useEffect(()=>{localStorage.setItem(KEY,JSON.stringify(data));setSaved(new Date().toLocaleTimeString("es-CL"))},[data]);
@@ -145,9 +172,13 @@ const liveActivity=useMemo(()=>{
 
 function aiMessage(i){return `Estimado cliente, se recuerda su Factura ${i.factura} por la suma de ${money(i.monto)}. Saludos Cordiales GpsRuta`}
 
-function saveClient(){if(!clientForm.nombre||!clientForm.rut)return;if(editingClient){setData({...data,clients:data.clients.map(c=>c.id===editingClient?{...clientForm,id:editingClient}:c)});setEditingClient(null)}else setData({...data,clients:[{...clientForm,id:Date.now()},...data.clients]});setClientForm({nombre:"",rut:"",giro:"",telefono:"569",email:"",direccion:"",contacto:""})}
+function saveClient(){if(!clientForm.nombre||!clientForm.rut){alert("Complete nombre/razón social y RUT del cliente.");return;}if(editingClient){setData({...data,clients:data.clients.map(c=>c.id===editingClient?{...clientForm,id:editingClient}:c)});setEditingClient(null)}else setData({...data,clients:[{...clientForm,id:Date.now()},...data.clients]});setClientForm({nombre:"",rut:"",giro:"",telefono:"569",email:"",direccion:"",contacto:""})}
 function editClient(c){setEditingClient(c.id);setClientForm(c);setTab("clientes")}
-function saveInvoice(){if(!invoiceForm.clienteId||!invoiceForm.factura||!invoiceForm.monto)return;let p={...invoiceForm,id:editingInvoice||Date.now(),clienteId:+invoiceForm.clienteId,monto:+invoiceForm.monto};setData({...data,invoices:editingInvoice?data.invoices.map(i=>i.id===editingInvoice?p:i):[p,...data.invoices]});setEditingInvoice(null);setInvoiceFolderMonth(mk(p.vencimiento||p.emision));setInvoiceForm({clienteId:"",factura:"",emision:today(),vencimiento:today(),monto:"",estado:"Pendiente",detalle:""})}
+function saveInvoice(){
+if(!invoiceForm.clienteId||!invoiceForm.factura||!invoiceForm.monto){alert("Complete cliente, número de factura y monto.");return;}
+const duplicated=data.invoices.some(i=>String(i.factura).trim().toLowerCase()===String(invoiceForm.factura).trim().toLowerCase()&&i.id!==editingInvoice);
+if(duplicated&&!confirm("Esta factura ya existe. ¿Desea guardarla igualmente?"))return;
+let p={...invoiceForm,id:editingInvoice||Date.now(),clienteId:+invoiceForm.clienteId,monto:+invoiceForm.monto};setData({...data,invoices:editingInvoice?data.invoices.map(i=>i.id===editingInvoice?p:i):[p,...data.invoices]});setEditingInvoice(null);setInvoiceFolderMonth(mk(p.vencimiento||p.emision));setInvoiceForm({clienteId:"",factura:"",emision:today(),vencimiento:today(),monto:"",estado:"Pendiente",detalle:""})}
 function editInvoice(i){setEditingInvoice(i.id);setInvoiceForm({...i,clienteId:String(i.clienteId)});setTab("facturas")}
 function saveIncome(){if(!incomeForm.categoria||!incomeForm.monto)return;let inv=data.invoices,desc=incomeForm.descripcion;if(incomeForm.facturaId){let f=data.invoices.find(i=>+i.id===+incomeForm.facturaId);inv=data.invoices.map(i=>+i.id===+incomeForm.facturaId?{...i,estado:"Pagada"}:i);if(!desc&&f)desc=`Pago ${f.factura}`}setData({...data,invoices:inv,incomes:[{...incomeForm,id:Date.now(),monto:+incomeForm.monto,descripcion:desc},...data.incomes]});setIncomeForm({fecha:today(),categoria:"Pago de factura",descripcion:"",monto:"",facturaId:""})}
 function saveExpense(){
@@ -611,4 +642,4 @@ function Table({rows,type,setData,data,quickFilter="",monthFilter="Todos",status
  let total=sorted.reduce((s,r)=>s+(+r.monto||0),0);
  return <div className="historyBox"><div className="historyMiniStats"><b>{sorted.length}</b><span>registros</span><strong>{money(total)}</strong></div><div className="tableWrap historyScroll"><table><thead><tr><th>Fecha</th><th>Mes/Año</th><th>Categoría</th><th>Descripción</th><th>Monto</th><th>Acciones</th></tr></thead><tbody>{sorted.map(r=><tr key={r.id}><td>{r.fecha||r.vencimiento}</td><td>{ml(mk(r.fecha||r.vencimiento))}</td><td>{r.categoria}{r.proveedor&&<small>{r.proveedor}</small>}{r.emailProveedor&&<small>{r.emailProveedor}</small>}</td><td>{r.descripcion}{r.estado&&<small>Estado: {r.estado}</small>}</td><td>{money(r.monto)}</td><td>{type==="debts"&&<a className="icon mail" href={debtEmail(r)} title="Correo manual deuda"><Mail size={17}/></a>}{type==="debts"&&typeof sendAutoDebt==="function"&&<button className="icon autoMailIcon" onClick={()=>sendAutoDebt(r)} title="Enviar deuda automático">AUTO</button>}<button className="icon trash" onClick={()=>setData({...data,[type]:(data[type]||[]).filter(x=>x.id!==r.id)})}><Trash2 size={17}/></button></td></tr>)}</tbody></table></div></div>}
 
-createRoot(document.getElementById("root")).render(<App/>);
+createRoot(document.getElementById("root")).render(<ErrorBoundary><App/></ErrorBoundary>);

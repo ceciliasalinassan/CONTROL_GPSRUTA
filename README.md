@@ -78,3 +78,7 @@ Facturas profesionales: carpetas por mes/año, filtros por estado y paginación 
 Cobros/Recordatorios compactado con filtros, contador, listado con scroll y panel de acción fijo.
 
 Historiales compactos: deudas, ingresos y egresos con filtros rápidos, scroll y panel de acción fijo.
+
+
+## Versión Estable PRO
+Se agregó protección contra errores, validaciones, advertencia de duplicados, mejoras de rendimiento visual y documentación de estabilización.
