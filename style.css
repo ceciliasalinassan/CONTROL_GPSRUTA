@@ -1378,3 +1378,176 @@ main:before{
 @media(max-width:1180px){
   .controlCenterPanel{grid-template-columns:1fr}
 }
+
+
+/* FACTURAS: LISTADO COMPACTO + FORMULARIO FIJO PARA EDITAR SIN VOLVER ARRIBA */
+.invoiceFormSticky{
+  position:sticky;
+  top:14px;
+  z-index:6;
+  align-self:start;
+  border-color:rgba(255,212,59,.38)!important;
+}
+
+.invoiceListCard{
+  align-self:start;
+}
+
+@media(min-width:1181px){
+  .invoiceListCard .tableWrap{
+    max-height:calc(100vh - 255px);
+    overflow:auto;
+  }
+  .invoiceListCard thead th{
+    position:sticky;
+    top:0;
+    z-index:3;
+    backdrop-filter:blur(12px);
+  }
+}
+
+/* compactar tabla de facturas */
+.invoiceListCard table{
+  font-size:12px!important;
+}
+
+.invoiceListCard th{
+  padding:9px 10px!important;
+  font-size:11px!important;
+}
+
+.invoiceListCard td{
+  padding:8px 10px!important;
+  vertical-align:middle;
+}
+
+.invoiceListCard .status{
+  padding:4px 7px!important;
+  font-size:11px;
+}
+
+.invoiceListCard .icon{
+  width:28px!important;
+  height:28px!important;
+  border-radius:8px!important;
+  font-size:9px!important;
+}
+
+.invoiceListCard .actions{
+  gap:4px!important;
+}
+
+/* IA: más columnas para pendientes 2 / 3 / 4 */
+.aiGrid{
+  grid-template-columns:repeat(6,1fr)!important;
+}
+
+.aiGrid div{
+  min-height:92px;
+}
+
+.aiGrid b{
+  font-size:24px!important;
+}
+
+.aiGrid span{
+  font-size:11px!important;
+}
+
+@media(max-width:1180px){
+  .aiGrid{grid-template-columns:repeat(2,1fr)!important}
+}
+
+@media(max-width:700px){
+  .aiGrid{grid-template-columns:1fr!important}
+}
+
+
+/* FACTURAS PROFESIONALES POR CARPETAS MES/AÑO + PAGINACIÓN */
+.invoiceFolderBar{
+  display:grid;
+  grid-template-columns:220px 170px 1fr;
+  gap:10px;
+  align-items:end;
+  margin:10px 0 12px;
+  padding:12px;
+  border:1px solid rgba(0,255,210,.22);
+  border-radius:16px;
+  background:rgba(0,255,210,.055);
+}
+
+.invoiceFolderBar label{
+  display:block;
+  color:#FFD43B;
+  font-size:11px;
+  font-weight:900;
+  text-transform:uppercase;
+  margin-bottom:5px;
+  letter-spacing:.4px;
+}
+
+.folderStats{
+  min-height:42px;
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:8px;
+  color:#eaffff;
+}
+
+.folderStats b{
+  color:#00ffd2;
+  font-size:24px;
+  text-shadow:0 0 12px rgba(0,255,210,.45);
+}
+
+.folderStats span{
+  color:#bfefff;
+  font-size:12px;
+  text-transform:uppercase;
+}
+
+.paginationBar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-top:12px;
+  padding:10px 12px;
+  border:1px solid rgba(255,212,59,.22);
+  border-radius:14px;
+  background:rgba(255,212,59,.055);
+}
+
+.paginationBar button{
+  border:1px solid rgba(0,255,210,.32);
+  background:rgba(0,255,210,.08);
+  color:#eaffff;
+  border-radius:11px;
+  padding:9px 12px;
+  font-weight:900;
+  cursor:pointer;
+}
+
+.paginationBar button:disabled{
+  opacity:.35;
+  cursor:not-allowed;
+}
+
+.paginationBar span{
+  color:#dff;
+  font-size:12px;
+  text-align:center;
+}
+
+@media(max-width:800px){
+  .invoiceFolderBar{
+    grid-template-columns:1fr;
+  }
+  .folderStats{
+    justify-content:flex-start;
+  }
+  .paginationBar{
+    flex-direction:column;
+  }
+}

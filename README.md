@@ -70,3 +70,7 @@ El sistema incluye:
 - CC automático al correo de cobranza
 
 Se agregó Centro de Control IA: radar financiero, centro de alertas y actividad en tiempo real.
+
+Facturas compactas con formulario sticky. IA agrega clientes con 2, 3 y 4+ facturas pendientes.
+
+Facturas profesionales: carpetas por mes/año, filtros por estado y paginación de 50 registros.
