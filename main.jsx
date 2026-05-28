@@ -2,7 +2,7 @@
 import React,{useEffect,useMemo,useState}from"react";
 import{createRoot}from"react-dom/client";
 import{AlertTriangle,Bell,CalendarDays,CheckCircle,Clock,CreditCard,Edit,Eye,FileText,Lock,LogOut,Mail,Paperclip,Plus,Search,ShieldCheck,Trash2,TrendingDown,TrendingUp,UploadCloud,User,Users,Wallet,Save,Building2,MessageCircle,Bot,Sparkles,Download,Upload,HardDrive}from"lucide-react";
-import{ComposedChart,Bar,Line,XAxis,YAxis,Tooltip,ResponsiveContainer,CartesianGrid,PieChart,Pie,Cell,Legend}from"recharts";
+import{ComposedChart,Bar,Line,XAxis,YAxis,Tooltip,ResponsiveContainer,CartesianGrid,PieChart,Pie,Cell,Legend,RadarChart,PolarGrid,PolarAngleAxis,PolarRadiusAxis,Radar}from"recharts";
 import * as XLSX from "xlsx";
 import"./style.css";
 
@@ -58,7 +58,7 @@ function Login({onLogin}){const[p,setP]=useState(""),[e,setE]=useState("");retur
 function K({t,v,s,icon:Icon,tone="green"}){return <div className="card kpi"><div className={`kpiIcon ${tone}`}><Icon size={32}/></div><div><small>{t}</small><h3>{v}</h3><p>{s}</p></div></div>}
 function Fields({obj,set,fields}){return <div className="formGrid">{fields.map(f=><input key={f} value={obj[f]||""} onChange={e=>set({...obj,[f]:e.target.value})} placeholder={f.toUpperCase()} type={["fecha","emision","vencimiento"].includes(f)?"date":f==="monto"?"number":"text"}/>)}</div>}
 function InvTable({items,client,edit,del,data={},attachFile=()=>{},canSendInvoice=()=>true}){return <div className="tableWrap"><table><thead><tr><th>Factura</th><th>Cliente</th><th>Vence</th><th>Mes/Año</th><th>Monto</th><th>Estado</th><th>Acciones</th></tr></thead><tbody>{items.map(i=>{let c=client(i.clienteId),s=ist(i),Icon=s.I;return <tr key={i.id}><td><b>{i.factura}</b></td><td>{c?.nombre}</td><td>{i.vencimiento}</td><td>{ml(mk(i.vencimiento))}</td><td>{money(i.monto)}</td><td><span className={`status ${s.c}`}><Icon size={14}/>{s.l}</span></td><td><div className="actions"><label className="icon attachMini" title="Adjuntar factura"><Paperclip size={17}/><input type="file" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.xls,.xlsx" onChange={e=>attachFile(i.id,e.target.files?.[0])}/></label><a className="icon whatsapp" title="Recordatorio WhatsApp" href={waReminder(i,c)} target="_blank"><W/></a><a className="icon mail" title="Recordatorio correo manual" href={emailReminder(i,c)}><Mail size={17}/></a><button className="icon autoMailIcon" title="Recordatorio automático Outlook" onClick={()=>sendAutoReminder(i,c)}>AUTO</button><button className={`icon autoInvoiceIcon ${!data.attachments?.[i.id]?"disabled":""}`} title="Enviar factura automática Outlook" onClick={()=>sendAutoInvoice(i,c)}>PDF</button><a className={`icon invoiceSend ${!data.attachments?.[i.id]?"disabled":""}`} title="Enviar factura WhatsApp" href={data.attachments?.[i.id]?waInvoice(i,c):"#"} onClick={e=>{if(!canSendInvoice(i.id))e.preventDefault()}} target="_blank">FAC</a><button className="icon edit" onClick={()=>edit(i)}><Edit size={17}/></button><button className="icon trash" onClick={()=>del(i.id)}><Trash2 size={17}/></button>{data.attachments?.[i.id]&&<span className="attachedOk">Adjunta</span>}</div></td></tr>})}</tbody></table></div>}
-function App(){const[logged,setLogged]=useState(()=>sessionStorage.getItem(SESSION)==="1"),[data,setData]=useState(load),[tab,setTab]=useState("dashboard"),[clock,setClock]=useState(new Date()),[search,setSearch]=useState(""),[alertSearch,setAlertSearch]=useState(""),[saved,setSaved]=useState("Sin cambios"),[selectedInvoiceId,setSelectedInvoiceId]=useState(null),[selectedMonth,setSelectedMonth]=useState(mk(today())),[chatOpen,setChatOpen]=useState(true),[chatInput,setChatInput]=useState(""),[emailSending,setEmailSending]=useState(false),[chatMessages,setChatMessages]=useState([{role:"ia",text:"Hola, soy la IA de Cobranza GPSRUTA. Puedes preguntarme por facturas vencidas, clientes de riesgo, ingresos, egresos, deudas o resumen del mes."}]);
+function App(){const[logged,setLogged]=useState(()=>sessionStorage.getItem(SESSION)==="1"),[data,setData]=useState(load),[tab,setTab]=useState("dashboard"),[clock,setClock]=useState(new Date()),[search,setSearch]=useState(""),[alertSearch,setAlertSearch]=useState(""),[saved,setSaved]=useState("Sin cambios"),[selectedInvoiceId,setSelectedInvoiceId]=useState(null),[selectedMonth,setSelectedMonth]=useState(mk(today())),[chatOpen,setChatOpen]=useState(true),[chatInput,setChatInput]=useState(""),[emailSending,setEmailSending]=useState(false),[chatMessages,setChatMessages]=useState([{role:"ia",text:"Hola, soy la IA de Cobranza GPSRUTA. Pregúntame: ¿quién debe más?, ¿facturas vencidas?, ¿clientes premium?, ¿resumen del mes?, ¿ingresos?, ¿egresos?"}]);
 const[clientForm,setClientForm]=useState({nombre:"",rut:"",giro:"",telefono:"569",email:"",direccion:"",contacto:""}),[invoiceForm,setInvoiceForm]=useState({clienteId:"",factura:"",emision:today(),vencimiento:today(),monto:"",estado:"Pendiente",detalle:""}),[incomeForm,setIncomeForm]=useState({fecha:today(),categoria:"Pago de factura",descripcion:"",monto:"",facturaId:""}),[expenseForm,setExpenseForm]=useState({fecha:today(),categoria:"Pago instalador",descripcion:"",monto:"",debtId:"",numeroFacturaPago:""}),[debtForm,setDebtForm]=useState({fecha:today(),proveedor:"",emailProveedor:"",categoria:"Compra de equipos",descripcion:"",monto:"",vencimiento:today(),estado:"Pendiente"}),[editingClient,setEditingClient]=useState(null),[editingInvoice,setEditingInvoice]=useState(null);
 useEffect(()=>{localStorage.setItem(KEY,JSON.stringify(data));setSaved(new Date().toLocaleTimeString("es-CL"))},[data]);
 useEffect(()=>{let t=setInterval(()=>setClock(new Date()),1000);return()=>clearInterval(t)},[]);
@@ -92,6 +92,30 @@ const aiData=useMemo(()=>{
  ];
  return {vencidas,porVencer,riesgoCliente,sugerencias};
 },[data]);
+
+const radarData=useMemo(()=>{
+ const maxBase=Math.max(stats.ingresos,stats.egresos,stats.deudas,stats.pend,1);
+ const premiumCount=aiData.riesgoCliente.filter(c=>c.riesgo==="PREMIUM").length;
+ const altoCount=aiData.riesgoCliente.filter(c=>c.riesgo==="ALTO").length;
+ return [
+  {area:"Ingresos",valor:Math.min(100,Math.round((stats.ingresos/maxBase)*100))},
+  {area:"Egresos",valor:Math.min(100,Math.round((stats.egresos/maxBase)*100))},
+  {area:"Deudas",valor:Math.min(100,Math.round((stats.deudas/maxBase)*100))},
+  {area:"Por cobrar",valor:Math.min(100,Math.round((stats.pend/maxBase)*100))},
+  {area:"Premium",valor:Math.min(100,premiumCount*20)},
+  {area:"Riesgo",valor:Math.min(100,altoCount*25)}
+ ];
+},[stats,aiData]);
+
+const liveActivity=useMemo(()=>{
+ const acts=[];
+ data.incomes.slice(0,3).forEach(i=>acts.push({icon:"💰",text:`Ingreso registrado: ${money(i.monto)} · ${i.categoria}`,date:i.fecha,type:"ok"}));
+ data.expenses.slice(0,3).forEach(e=>acts.push({icon:"📤",text:`Egreso registrado: ${money(e.monto)} · ${e.categoria}`,date:e.fecha,type:"bad"}));
+ aiData.vencidas.slice(0,3).forEach(f=>acts.push({icon:"⚠️",text:`Factura vencida: ${f.factura} · ${client(f.clienteId)?.nombre||""}`,date:f.vencimiento,type:"warn"}));
+ aiData.riesgoCliente.filter(c=>c.riesgo==="PREMIUM").slice(0,2).forEach(c=>acts.push({icon:"⭐",text:`Cliente PREMIUM al día: ${c.nombre}`,date:today(),type:"premium"}));
+ return acts.sort((a,b)=>String(b.date).localeCompare(String(a.date))).slice(0,8);
+},[data,aiData]);
+
 function aiMessage(i){return `Estimado cliente, se recuerda su Factura ${i.factura} por la suma de ${money(i.monto)}. Saludos Cordiales GpsRuta`}
 
 function saveClient(){if(!clientForm.nombre||!clientForm.rut)return;if(editingClient){setData({...data,clients:data.clients.map(c=>c.id===editingClient?{...clientForm,id:editingClient}:c)});setEditingClient(null)}else setData({...data,clients:[{...clientForm,id:Date.now()},...data.clients]});setClientForm({nombre:"",rut:"",giro:"",telefono:"569",email:"",direccion:"",contacto:""})}
@@ -459,11 +483,46 @@ return <div className="app"><aside><Logo/><div className="admin"><User size={24}
       {chatMessages.map((m,i)=><div key={i} className={`aiMsg ${m.role}`}><pre>{m.text}</pre></div>)}
     </div>
     <div className="aiChatInput">
-      <input value={chatInput} onChange={e=>setChatInput(e.target.value)} onKeyDown={e=>{if(e.key==="Enter")askDashboardAI()}} placeholder="Pregunta: ¿quién debe más?"/>
+      <input value={chatInput} onChange={e=>setChatInput(e.target.value)} onKeyDown={e=>{if(e.key==="Enter")askDashboardAI()}} placeholder="Ej: ¿quién debe más? / resumen del mes / premium"/>
       <button onClick={askDashboardAI}><MessageCircle size={17}/>Enviar</button>
     </div>
   </div>}
 </div>
+
+{tab==="dashboard"&&<section className="controlCenterPanel">
+  <div className="card holoCard radarPanel">
+    <div className="holoBadge small">RADAR IA</div>
+    <h2>Radar financiero inteligente</h2>
+    <div className="radarBox">
+      <ResponsiveContainer width="100%" height="100%">
+        <RadarChart data={radarData}>
+          <PolarGrid stroke="rgba(0,255,210,.22)"/>
+          <PolarAngleAxis dataKey="area" tick={{fill:"#eaffff",fontSize:11}}/>
+          <PolarRadiusAxis angle={30} domain={[0,100]} tick={false} axisLine={false}/>
+          <Radar name="GPSRUTA" dataKey="valor" stroke="#00ffd2" fill="#00ffd2" fillOpacity={0.28} strokeWidth={3}/>
+          <Tooltip contentStyle={{background:"#050505",border:"1px solid #00ffd2",borderRadius:"12px"}}/>
+        </RadarChart>
+      </ResponsiveContainer>
+    </div>
+  </div>
+  <div className="card holoCard alertCenter">
+    <div className="holoBadge small">CENTRO DE ALERTAS</div>
+    <h2>Alertas inteligentes</h2>
+    <div className="alertGridPro">
+      <div className="alertBox red"><b>{aiData.vencidas.length}</b><span>Vencidas 15 días</span></div>
+      <div className="alertBox yellow"><b>{aiData.porVencer.length}</b><span>Por vencer 15 días</span></div>
+      <div className="alertBox green"><b>{aiData.riesgoCliente.filter(c=>c.riesgo==="PREMIUM").length}</b><span>Premium</span></div>
+      <div className="alertBox blue"><b>{aiData.riesgoCliente.filter(c=>c.riesgo==="ALTO").length}</b><span>Riesgo alto</span></div>
+    </div>
+  </div>
+  <div className="card holoCard livePanel">
+    <div className="holoBadge small">LIVE FEED</div>
+    <h2>Actividad en tiempo real</h2>
+    <div className="liveFeed">
+      {liveActivity.length?liveActivity.map((a,i)=><div className={`liveItem ${a.type}`} key={i}><strong>{a.icon}</strong><div><b>{a.text}</b><span>{a.date}</span></div></div>):<p>No hay actividad reciente.</p>}
+    </div>
+  </div>
+</section>}
 {tab==="clientes"&&<section className="two"><div className="card clientFormSticky"><h2>{editingClient?"Editar cliente":"Nuevo cliente"}</h2>
 <div className="excelImportBox">
   <label className="excelBtn">📥 Cargar clientes desde Excel

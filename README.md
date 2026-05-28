@@ -68,3 +68,5 @@ El sistema incluye:
 - Envío automático de factura adjunta
 - Envío automático de correo de deuda/proveedor
 - CC automático al correo de cobranza
+
+Se agregó Centro de Control IA: radar financiero, centro de alertas y actividad en tiempo real.
