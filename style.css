@@ -1174,3 +1174,60 @@ main:before{
     width:calc(100vw - 24px);
   }
 }
+
+/* CLIENTES COMPACTOS Y EDICIÓN FÁCIL */
+.clientFormSticky{position:sticky;top:14px;z-index:5;align-self:start}
+.compactClient{display:grid!important;grid-template-columns:1fr auto;align-items:center;gap:10px;min-height:58px;padding:10px 12px!important}
+.clientMiniInfo{min-width:0}
+.clientMiniInfo b{display:block;font-size:14px;color:#fff;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.clientMiniInfo span{display:block;color:#FFD43B;font-weight:800;font-size:12px;margin-top:4px}
+.clientMiniActions{display:flex;gap:5px}
+.compactClient .icon{width:30px!important;height:30px!important;border-radius:9px!important}
+.cards{align-content:start}
+@media(min-width:1181px){.cards{max-height:calc(100vh - 210px);overflow:auto;padding-right:6px}}
+
+
+/* OUTLOOK AUTOMÁTICO REAL */
+.emailStatus{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  border:1px solid rgba(0,255,210,.35);
+  border-radius:13px;
+  background:rgba(0,255,210,.08);
+  color:#00ffd2;
+  padding:11px 14px;
+  font-weight:bold;
+}
+.emailStatus.sending{
+  color:#FFD43B;
+  border-color:rgba(255,212,59,.45);
+  background:rgba(255,212,59,.10);
+}
+.autoMail{
+  border-color:rgba(0,255,210,.45)!important;
+  background:linear-gradient(135deg,rgba(0,255,210,.18),rgba(124,252,0,.12))!important;
+  color:#eaffff!important;
+  cursor:pointer;
+}
+.autoMail.disabled{
+  opacity:.45;
+  cursor:not-allowed;
+}
+.autoMailIcon,.autoInvoiceIcon{
+  width:auto!important;
+  min-width:44px;
+  padding:0 8px;
+  color:#00ffd2!important;
+  border-color:rgba(0,255,210,.45)!important;
+  font-size:10px;
+  font-weight:900;
+}
+.autoInvoiceIcon{
+  color:#FFD43B!important;
+  border-color:rgba(255,212,59,.45)!important;
+}
+.autoInvoiceIcon.disabled{
+  opacity:.45;
+  cursor:not-allowed;
+}

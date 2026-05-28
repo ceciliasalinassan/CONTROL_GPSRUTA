@@ -46,3 +46,25 @@ Dashboard mejorado con estilo futurista animado, holográfico y efectos neón.
 Hora en formato 24 hrs. Cliente PREMIUM automático al estar al día. Riesgo: alto 4 vencidas, medio 3 vencidas, bajo 2 vencidas.
 
 Dashboard 3D más futurista e IA Chat dentro del dashboard agregados.
+
+Clientes compactos; edición sticky; IA y recordatorios a 15 días corregidos.
+
+
+## Envío automático real Outlook
+
+Correo configurado:
+gpsruta007@outlook.com
+
+En Vercel debes agregar estas variables de entorno:
+
+OUTLOOK_USER=gpsruta007@outlook.com
+OUTLOOK_APP_PASSWORD=contraseña_de_aplicación_outlook
+
+Luego hacer redeploy.
+
+El sistema incluye:
+- /api/send-email.js
+- Envío automático de recordatorios
+- Envío automático de factura adjunta
+- Envío automático de correo de deuda/proveedor
+- CC automático al correo de cobranza

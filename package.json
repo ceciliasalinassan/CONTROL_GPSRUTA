@@ -16,7 +16,8 @@
     "react-dom": "latest",
     "lucide-react": "latest",
     "recharts": "latest",
-    "xlsx": "latest"
+    "xlsx": "latest",
+    "nodemailer": "latest"
   },
   "devDependencies": {}
 }
