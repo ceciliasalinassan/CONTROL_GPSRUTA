@@ -85,7 +85,7 @@ class ErrorBoundary extends Component{
   }
 }
 
-function App(){const[logged,setLogged]=useState(()=>sessionStorage.getItem(SESSION)==="1"),[data,setData]=useState(load),[tab,setTab]=useState("dashboard"),[clock,setClock]=useState(new Date()),[search,setSearch]=useState(""),[historyQuickFilter,setHistoryQuickFilter]=useState(""),[historyMonthFilter,setHistoryMonthFilter]=useState("Todos"),[historyStatusFilter,setHistoryStatusFilter]=useState("Todos"),[alertSearch,setAlertSearch]=useState(""),[reminderStatusFilter,setReminderStatusFilter]=useState("Todas"),[saved,setSaved]=useState("Sin cambios"),[selectedInvoiceId,setSelectedInvoiceId]=useState(null),[selectedMonth,setSelectedMonth]=useState(mk(today())),[invoiceFolderMonth,setInvoiceFolderMonth]=useState(mk(today())),[invoiceStatusFilter,setInvoiceStatusFilter]=useState("Todas"),[invoicePage,setInvoicePage]=useState(1),[chatOpen,setChatOpen]=useState(true),[chatInput,setChatInput]=useState(""),[emailSending,setEmailSending]=useState(false),[chatMessages,setChatMessages]=useState([{role:"ia",text:"Hola, soy la IA de Cobranza GPSRUTA. Pregúntame: ¿quién debe más?, ¿facturas vencidas?, ¿clientes premium?, ¿resumen del mes?, ¿ingresos?, ¿egresos?"}]);
+function App(){const[logged,setLogged]=useState(()=>sessionStorage.getItem(SESSION)==="1"),[data,setData]=useState(load),[tab,setTab]=useState("dashboard"),[clock,setClock]=useState(new Date()),[search,setSearch]=useState(""),[historyQuickFilter,setHistoryQuickFilter]=useState(""),[historyMonthFilter,setHistoryMonthFilter]=useState("Todos"),[historyStatusFilter,setHistoryStatusFilter]=useState("Todos"),[alertSearch,setAlertSearch]=useState(""),[reminderStatusFilter,setReminderStatusFilter]=useState("Todas"),[saved,setSaved]=useState("Sin cambios"),[selectedInvoiceId,setSelectedInvoiceId]=useState(null),[selectedMonth,setSelectedMonth]=useState(mk(today())),[invoiceFolderMonth,setInvoiceFolderMonth]=useState("Todas"),[invoiceStatusFilter,setInvoiceStatusFilter]=useState("Todas"),[invoicePage,setInvoicePage]=useState(1),[chatOpen,setChatOpen]=useState(true),[chatInput,setChatInput]=useState(""),[emailSending,setEmailSending]=useState(false),[chatMessages,setChatMessages]=useState([{role:"ia",text:"Hola, soy la IA de Cobranza GPSRUTA. Pregúntame: ¿quién debe más?, ¿facturas vencidas?, ¿clientes premium?, ¿resumen del mes?, ¿ingresos?, ¿egresos?"}]);
 const[clientForm,setClientForm]=useState({nombre:"",rut:"",giro:"",telefono:"569",email:"",direccion:"",contacto:""}),[invoiceForm,setInvoiceForm]=useState({clienteId:"",factura:"",emision:today(),vencimiento:today(),monto:"",estado:"Pendiente",detalle:""}),[incomeForm,setIncomeForm]=useState({fecha:today(),categoria:"Pago de factura",descripcion:"",monto:"",facturaId:""}),[expenseForm,setExpenseForm]=useState({fecha:today(),categoria:"Pago instalador",descripcion:"",monto:"",debtId:"",numeroFacturaPago:""}),[debtForm,setDebtForm]=useState({fecha:today(),proveedor:"",emailProveedor:"",categoria:"Compra de equipos",descripcion:"",monto:"",vencimiento:today(),estado:"Pendiente"}),[editingClient,setEditingClient]=useState(null),[editingInvoice,setEditingInvoice]=useState(null);
 useEffect(()=>{localStorage.setItem(KEY,JSON.stringify(data));setSaved(new Date().toLocaleTimeString("es-CL"))},[data]);
 useEffect(()=>{let t=setInterval(()=>setClock(new Date()),1000);return()=>clearInterval(t)},[]);
@@ -104,13 +104,13 @@ const stats=useMemo(()=>{let ingresos=fm.incomes.reduce((s,x)=>s+ +x.monto,0),eg
 const filteredClients=data.clients.filter(c=>`${c.nombre} ${c.rut} ${c.email} ${c.giro}`.toLowerCase().includes(search.toLowerCase()));
 const filteredInvoices=data.invoices.filter(i=>`${i.factura} ${client(i.clienteId)?.nombre||""}`.toLowerCase().includes(search.toLowerCase()));
 const invoiceMonths=useMemo(()=>{
- const set=new Set([mk(today())]);
+ const set=new Set(["Todas",mk(today())]);
  data.invoices.forEach(i=>set.add(mk(i.vencimiento||i.emision||today())));
  return [...set].sort().reverse();
 },[data.invoices]);
 const filteredInvoicesByFolder=useMemo(()=>{
  return data.invoices
-  .filter(i=>mk(i.vencimiento||i.emision||today())===invoiceFolderMonth)
+  .filter(i=>invoiceFolderMonth==="Todas"||mk(i.vencimiento||i.emision||today())===invoiceFolderMonth)
   .filter(i=>`${i.factura} ${client(i.clienteId)?.nombre||""} ${client(i.clienteId)?.rut||""}`.toLowerCase().includes(search.toLowerCase()))
   .filter(i=>invoiceStatusFilter==="Todas"||ist(i).l===invoiceStatusFilter)
   .sort((a,b)=>String(a.factura||"").localeCompare(String(b.factura||""),undefined,{numeric:true}));
@@ -595,7 +595,7 @@ return <div className="app"><aside><Logo/><div className="admin"><User size={24}
 <div className="excelImportBox"><label className="excelBtn">📥 Cargar facturas desde Excel<input type="file" accept=".xlsx,.xls,.csv" onChange={e=>importInvoicesExcel(e.target.files?.[0])}/></label><small>Columnas: factura, rut cliente o cliente, emision, vencimiento, monto, estado, detalle.</small></div><select value={invoiceForm.clienteId} onChange={e=>setInvoiceForm({...invoiceForm,clienteId:e.target.value})}><option value="">Seleccionar cliente</option>{data.clients.map(c=><option key={c.id} value={c.id}>{c.nombre}</option>)}</select><Fields obj={invoiceForm} set={setInvoiceForm} fields={["factura","emision","vencimiento","monto","detalle"]}/><select value={invoiceForm.estado} onChange={e=>setInvoiceForm({...invoiceForm,estado:e.target.value})}><option>Pendiente</option><option>Vencida</option><option>Pagada</option></select><button className="primary" onClick={saveInvoice}><Plus size={17}/>Guardar factura</button></div><div className="card invoiceListCard">
 <div className="historyHead"><h2>Listado de facturas por cobrar</h2><small className="requiredAttach">Organizado por carpeta mensual. Recordatorio no requiere adjunto.</small></div>
 <div className="invoiceFolderBar">
-  <div><label>Carpeta mes/año</label><select value={invoiceFolderMonth} onChange={e=>setInvoiceFolderMonth(e.target.value)}>{invoiceMonths.map(m=><option key={m} value={m}>{ml(m)}</option>)}</select></div>
+  <div><label>Carpeta mes/año</label><select value={invoiceFolderMonth} onChange={e=>setInvoiceFolderMonth(e.target.value)}>{invoiceMonths.map(m=><option key={m} value={m}>{m==="Todas"?"TODAS":ml(m)}</option>)}</select></div>
   <div><label>Estado</label><select value={invoiceStatusFilter} onChange={e=>setInvoiceStatusFilter(e.target.value)}><option>Todas</option><option>Pendiente</option><option>Por vencer</option><option>Vencida</option><option>Pagada</option></select></div>
   <div className="folderStats"><b>{filteredInvoicesByFolder.length}</b><span>facturas en carpeta</span></div>
 </div>

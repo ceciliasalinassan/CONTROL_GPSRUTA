@@ -82,3 +82,5 @@ Historiales compactos: deudas, ingresos y egresos con filtros rápidos, scroll y
 
 ## Versión Estable PRO
 Se agregó protección contra errores, validaciones, advertencia de duplicados, mejoras de rendimiento visual y documentación de estabilización.
+
+Filtro Carpeta mes/año actualizado: incluye opción TODAS por defecto.
